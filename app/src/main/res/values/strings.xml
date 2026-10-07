@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="wechat_screen_accessibility_description">打开微信支付会话或微信转账账单详情时，在本机识别屏幕上可见的交易信息。截图只在内存中处理，不保存图片或原始文字；转账进入待核对。</string>
+</resources>
