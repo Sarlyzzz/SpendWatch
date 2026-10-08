@@ -144,10 +144,13 @@ class Phone:
         self.tap(box.x, box.y, package)
 
     def wheel_value(self, column_x: int, center_y: int) -> int:
-        boxes = self.ocr((column_x - 105, center_y - 55,
-                          column_x + 105, center_y + 55))
-        parsed = [(abs(box.y - center_y), int(match.group()))
-                  for box in boxes if (match := re.search(r"\d+", box.text))]
+        boxes = self.ocr((column_x - 140, center_y - 85,
+                          column_x + 140, center_y + 85))
+        parsed = []
+        for box in boxes:
+            label = "1" if box.text in {"I", "l", "L", "|"} else box.text
+            if match := re.search(r"\d+", label):
+                parsed.append((abs(box.y - center_y), int(match.group())))
         if not parsed:
             raise FlowError("日期滚轮当前值无法读取，停止操作")
         return min(parsed)[1]
@@ -237,10 +240,11 @@ def alipay(phone: Phone, start: date, end: date, submit: bool):
     phone.tap_text("账单", pkg, exact=True, region=(0, 500, 1260, 1050))
     phone.wait_text("搜索交易记录")
     phone.tap(1180, 215, pkg)
-    phone.tap_text("开具交易流水证明", pkg)
+    # This menu item wraps onto two lines on the calibrated phone.
+    phone.tap_text("开具交易流", pkg)
     phone.wait_text("选择申请用途")
     phone.tap_text("申请", pkg, exact=True, region=(0, 2200, 1260, 2700))
-    phone.wait_text("选择交易流水范围")
+    phone.wait_text("选择交易流水范围", timeout=35)
     phone.tap_text("自定义", pkg, exact=True)
     phone.tap_text("开始日期", pkg, exact=True)
     phone.wait_text("选择时间")
